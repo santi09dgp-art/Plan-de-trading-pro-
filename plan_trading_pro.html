@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Trading Profesional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:        #C9A84C;
+    --gold-light:  #E2C47A;
+    --gold-dim:    rgba(201,168,76,0.18);
+    --gold-border: rgba(201,168,76,0.28);
+    --bg:          #0B0B0B;
+    --bg2:         #111111;
+    --bg3:         #181818;
+    --bg4:         #1E1E1E;
+    --text:        #EDE8DF;
+    --text2:       rgba(237,232,223,0.60);
+    --text3:       rgba(237,232,223,0.35);
+    --red:         #C0392B;
+    --red-dim:     rgba(192,57,43,0.15);
+    --red-border:  rgba(192,57,43,0.35);
+    --font-display:'Bebas Neue', 'Arial Black', sans-serif;
+    --font-body:   'DM Sans', 'Helvetica Neue', Helvetica, sans-serif;
+    --radius:      10px;
+    --radius-sm:   6px;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  /* ── DECK WRAPPER ─────────────────────────────── */
+  #deck {
+    width: 100vw; height: 100vh;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+
+  /* ── PROGRESS BAR ─────────────────────────────── */
+  #progress-bar {
+    position: absolute; top: 0; left: 0;
+    height: 2px; background: var(--gold);
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    z-index: 100;
+  }
+
+  /* ── SLIDES ───────────────────────────────────── */
+  #slides-wrap {
+    flex: 1; position: relative; overflow: hidden;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    padding: 48px 56px 36px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.42s cubic-bezier(.4,0,.2,1),
+                transform 0.42s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active {
+    opacity: 1; transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.exit-left {
+    opacity: 0; transform: translateX(-60px);
+  }
+
+  /* ── SLIDE HEADER ELEMENTS ────────────────────── */
+  .tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; font-weight: 500;
+    color: var(--gold);
+    border: 0.5px solid var(--gold-border);
+    padding: 5px 12px; border-radius: 2px;
+    width: fit-content; margin-bottom: 20px;
+  }
+  .tag::before {
+    content: '';
+    display: block; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--gold);
+  }
+
+  .slide-title {
+    font-family: var(--font-display);
+    font-size: 58px; line-height: 0.92;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .slide-title em {
+    color: var(--gold); font-style: normal;
+  }
+
+  .subtitle {
+    font-size: 13.5px; line-height: 1.65;
+    color: var(--text2); max-width: 500px;
+    margin-top: 10px; font-weight: 300;
+  }
+
+  .impact {
+    margin-top: auto; padding-top: 24px;
+    font-size: 10.5px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gold-light);
+    font-weight: 500; display: flex; align-items: center; gap: 10px;
+  }
+  .impact::before {
+    content: '';
+    display: block; width: 28px; height: 1px;
+    background: var(--gold);
+  }
+
+  /* ── DIVIDER ──────────────────────────────────── */
+  .divider {
+    height: 0.5px; background: var(--gold-border);
+    margin: 18px 0;
+  }
+
+  /* ── GRID LAYOUTS ─────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 22px; }
+  .grid-2-1 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 22px; }
+
+  /* ── BLOCKS ───────────────────────────────────── */
+  .block {
+    background: var(--bg3);
+    border: 0.5px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .block-title {
+    font-size: 9.5px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gold);
+    font-weight: 500; margin-bottom: 10px;
+  }
+  .block-body {
+    font-size: 13px; color: var(--text);
+    line-height: 1.7; font-weight: 300;
+  }
+  .block-body b, .block-body strong {
+    color: var(--gold-light); font-weight: 500;
+  }
+  .block-stat {
+    font-family: var(--font-display);
+    font-size: 48px; color: var(--gold);
+    line-height: 1; margin: 6px 0 4px;
+  }
+
+  /* ── STEPS ────────────────────────────────────── */
+  .steps { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+  .step {
+    background: var(--bg3);
+    border-left: 2px solid var(--gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 14px 20px;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 28px; color: var(--gold);
+    line-height: 1; min-width: 28px;
+  }
+  .step-content {}
+  .step-label {
+    font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold);
+    font-weight: 500; margin-bottom: 4px;
+  }
+  .step-text { font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 300; }
+
+  /* ── RULES ────────────────────────────────────── */
+  .rule {
+    background: var(--bg3);
+    border: 0.5px solid var(--red-border);
+    border-left: 2px solid var(--red);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 13px 18px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .rule-num {
+    font-family: var(--font-display);
+    font-size: 22px; color: var(--red);
+    line-height: 1.1; min-width: 22px;
+  }
+  .rule-label {
+    font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--red);
+    font-weight: 500; margin-bottom: 3px;
+    opacity: 0.8;
+  }
+  .rule-text { font-size: 13px; color: var(--text); line-height: 1.55; font-weight: 300; }
+
+  /* ── CHECKLIST ────────────────────────────────── */
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+  .check-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; color: var(--text); line-height: 1.6; font-weight: 300;
+  }
+  .check-list li::before {
+    content: '';
+    display: block; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--gold);
+    flex-shrink: 0; margin-top: 6px;
+  }
+  .check-list li b { color: var(--gold-light); font-weight: 500; }
+
+  /* ── PILLS ────────────────────────────────────── */
+  .pill {
+    display: inline-block;
+    background: var(--gold-dim);
+    border: 0.5px solid var(--gold-border);
+    border-radius: 3px;
+    padding: 4px 10px;
+    font-size: 11px; color: var(--gold-light);
+    margin: 3px;
+  }
+  .pill-red {
+    background: var(--red-dim);
+    border-color: var(--red-border);
+    color: #E57373;
+  }
+
+  /* ── COVER SLIDE ──────────────────────────────── */
+  #slide-0 { justify-content: flex-end; padding-bottom: 56px; }
+  .cover-ring {
+    position: absolute;
+    border: 0.5px solid var(--gold-border);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .cover-line-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 1.5px; background: var(--gold); opacity: 0.5;
+  }
+  .cover-title {
+    font-family: var(--font-display);
+    font-size: 84px; line-height: 0.88;
+    letter-spacing: 2px; color: var(--text);
+    margin-bottom: 18px;
+  }
+  .cover-title em { color: var(--gold); font-style: normal; }
+  .cover-sub {
+    font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text2);
+    font-weight: 300; margin-bottom: 32px;
+  }
+  .cover-system {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;
+  }
+
+  /* ── COMMITMENT ───────────────────────────────── */
+  .commitment-wrap {
+    background: var(--bg3);
+    border: 0.5px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 32px 36px; margin-top: 24px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .commitment-wrap::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 1px; background: var(--gold); opacity: 0.4;
+  }
+  .commitment-text {
+    font-size: 14px; line-height: 1.85;
+    color: var(--text); font-weight: 300; font-style: italic;
+  }
+  .commitment-text b { color: var(--gold-light); font-weight: 500; font-style: normal; }
+  .sign-area {
+    margin-top: 28px; padding-top: 20px;
+    border-top: 0.5px solid var(--gold-border);
+    display: flex; justify-content: space-around;
+  }
+  .sign-field { text-align: center; }
+  .sign-field .sign-line-el {
+    width: 140px; height: 0.5px;
+    background: var(--gold-border); margin: 0 auto 6px;
+  }
+  .sign-field p {
+    font-size: 9.5px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text3);
+  }
+
+  /* ── SECTION BADGE ────────────────────────────── */
+  .section-badge {
+    position: absolute; top: 24px; right: 56px;
+    font-size: 9.5px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text3);
+    font-weight: 400;
+  }
+
+  /* ── NAV BAR ──────────────────────────────────── */
+  #nav {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 56px;
+    height: 56px;
+    border-top: 0.5px solid var(--gold-border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    font-family: var(--font-body);
+    font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 500;
+    color: var(--gold);
+    background: transparent;
+    border: 0.5px solid var(--gold-border);
+    padding: 8px 20px; border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+  }
+  .nav-btn:hover:not(:disabled) { background: var(--gold-dim); }
+  .nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+  .nav-center { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .nav-dots { display: flex; gap: 6px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: transparent;
+    border: 0.5px solid var(--gold-border);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.active { background: var(--gold); border-color: var(--gold); }
+  .counter {
+    font-family: var(--font-display);
+    font-size: 15px; color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  /* ── PROTOCOL GRID ────────────────────────────── */
+  .proto-col { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ── STAT ROW ─────────────────────────────────── */
+  .stat-row { display: flex; gap: 20px; align-items: flex-end; margin-top: 20px; }
+  .stat-item {}
+  .stat-num { font-family: var(--font-display); font-size: 56px; color: var(--gold); line-height: 1; }
+  .stat-label-el { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); margin-top: 2px; }
+
+  /* ── SCROLLBAR ────────────────────────────────── */
+  .slide::-webkit-scrollbar { width: 3px; }
+  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+  /* ── KEYBOARD HINT ────────────────────────────── */
+  #kb-hint {
+    position: absolute; bottom: 68px; right: 56px;
+    font-size: 10px; letter-spacing: 1.5px; color: var(--text3);
+    text-transform: uppercase; pointer-events: none;
+    opacity: 1; transition: opacity 1s;
+  }
+  #kb-hint.hidden { opacity: 0; }
+</style>
+</head>
+<body>
+
+<div id="deck">
+  <div id="progress-bar" style="width:10%"></div>
+
+  <div id="slides-wrap">
+
+    <!-- ── SLIDE 0: PORTADA ───────────────────────── -->
+    <div class="slide active" id="slide-0">
+      <div class="cover-ring" style="width:380px;height:380px;right:-100px;top:-100px;opacity:.3;"></div>
+      <div class="cover-ring" style="width:220px;height:220px;right:10px;top:10px;opacity:.15;"></div>
+      <div class="cover-ring" style="width:80px;height:80px;right:90px;top:90px;opacity:.2;"></div>
+
+      <div class="cover-system">
+        <span class="pill">Contexto</span>
+        <span class="pill">Dirección</span>
+        <span class="pill">Zona</span>
+        <span class="pill">Confirmación</span>
+      </div>
+
+      <div class="cover-title">MI PLAN<br>DE <em>TRADING</em></div>
+      <p class="cover-sub">Sistema estructurado &nbsp;·&nbsp; Disciplina consistente &nbsp;·&nbsp; Resultados sostenibles</p>
+
+      <div class="impact">Un trader consistente se construye. No nace.</div>
+      <div class="cover-line-bottom"></div>
+    </div>
+
+    <!-- ── SLIDE 1: IDENTIDAD ─────────────────────── -->
+    <div class="slide" id="slide-1">
+      <span class="section-badge">01 — Identidad</span>
+      <div class="tag">El Ser del Trader</div>
+      <div class="slide-title">IDENTIDAD<br>DEL <em>TRADER</em></div>
+
+      <div class="grid-2">
+        <div class="block">
+          <div class="block-title">Tipo de Trader</div>
+          <div class="block-body">Trader <b>intradía</b> enfocado en sesiones de alta liquidez. Opera con <b>paciencia</b>, no con frecuencia.</div>
+        </div>
+        <div class="block">
+          <div class="block-title">Estado Emocional</div>
+          <div class="block-body">Solo opera en estado <b>neutro y estable</b>. El miedo y la euforia son señales de <b>no operar</b>.</div>
+        </div>
+        <div class="block">
+          <div class="block-title">Principio Central</div>
+          <div class="block-body"><b>Proceso antes que resultado.</b> El sistema primero. El dinero es consecuencia de la disciplina.</div>
+        </div>
+        <div class="block">
+          <div class="block-title">Marco Mental</div>
+          <div class="block-body">Pérdida = información. <b>No hay fracasos, hay datos.</b> Cada trade es una ejecución del plan.</div>
+        </div>
+      </div>
+
+      <div class="impact">Soy el activo más importante de mi trading</div>
+    </div>
+
+    <!-- ── SLIDE 2: SISTEMA ───────────────────────── -->
+    <div class="slide" id="slide-2">
+      <span class="section-badge">02 — Sistema</span>
+      <div class="tag">El Método</div>
+      <div class="slide-title">SISTEMA DE<br><em>TRADING</em></div>
+      <p class="subtitle">Cuatro filtros obligatorios. Si uno falla, no hay operación.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-label">Contexto</div>
+            <div class="step-text">Leer la estructura del mercado: liquidez, zonas clave y tipo de movimiento (trending / lateral). El mercado habla primero.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-label">Dirección</div>
+            <div class="step-text">Identificar la tendencia dominante y el sesgo del día. Solo operar <strong>a favor del flujo institucional</strong>.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-label">Zona — POI</div>
+            <div class="step-text">Localizar el Punto de Interés: zona de oferta o demanda institucional. <strong>Alta probabilidad, no certeza</strong>.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-label">Confirmación</div>
+            <div class="step-text">Esperar la señal y el timing preciso. Sin confirmación, no hay ejecución. <strong>La paciencia es parte del sistema</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact">Todo debe cumplirse. Sin excepciones.</div>
+    </div>
+
+    <!-- ── SLIDE 3: RIESGO ────────────────────────── -->
+    <div class="slide" id="slide-3">
+      <span class="section-badge">03 — Riesgo</span>
+      <div class="tag">Protección del Capital</div>
+      <div class="slide-title">GESTIÓN DE<br><em>RIESGO</em></div>
+
+      <div class="grid-3">
+        <div class="block" style="text-align:center;">
+          <div class="block-title">Riesgo / Trade</div>
+          <div class="block-stat">1%</div>
+          <div class="block-body">máximo por operación</div>
+        </div>
+        <div class="block" style="text-align:center;">
+          <div class="block-title">Ratio Mínimo</div>
+          <div class="block-stat">1:3</div>
+          <div class="block-body">riesgo / recompensa</div>
+        </div>
+        <div class="block" style="text-align:center;">
+          <div class="block-title">Trades / Día</div>
+          <div class="block-stat">3</div>
+          <div class="block-body">límite diario absoluto</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid-2">
+        <div class="block">
+          <div class="block-title">Stop Loss</div>
+          <div class="block-body"><b>Obligatorio en cada trade.</b> Se coloca antes de entrar, nunca después. No se mueve en contra de la posición.</div>
+        </div>
+        <div class="block">
+          <div class="block-title">Gestión de Rachas</div>
+          <div class="block-body"><b>2 pérdidas seguidas</b> → pausa obligatoria de 30 min.<br><b>3 pérdidas en el día</b> → cierre total de sesión.</div>
+        </div>
+      </div>
+
+      <div class="impact">El capital es la herramienta. Protegerla es la prioridad.</div>
+    </div>
+
+    <!-- ── SLIDE 4: SESIONES ──────────────────────── -->
+    <div class="slide" id="slide-4">
+      <span class="section-badge">04 — Sesiones</span>
+      <div class="tag">Timing de Mercado</div>
+      <div class="slide-title">GESTIÓN DE<br><em>SESIONES</em></div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="block">
+          <div class="block-title">Sesión Asia</div>
+          <div style="font-family:var(--font-display);font-size:26px;color:var(--text2);margin:8px 0 12px;">REFERENCIA</div>
+          <ul class="check-list" style="margin-top:0;">
+            <li>Mapear rangos y zonas de liquidez</li>
+            <li>Identificar extremos de precio</li>
+            <li><b>Observar, no actuar.</b> Esta sesión informa, no ejecuta.</li>
+          </ul>
+        </div>
+        <div class="block" style="border-color:var(--gold);">
+          <div class="block-title">Sesión New York</div>
+          <div style="font-family:var(--font-display);font-size:26px;color:var(--gold);margin:8px 0 12px;">PRIMARIA</div>
+          <ul class="check-list" style="margin-top:0;">
+            <li>Alta liquidez y movimiento institucional</li>
+            <li>Ventana principal de operación</li>
+            <li><b>Ejecutar el plan aquí.</b> Máxima concentración.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="block" style="margin-top:12px; background:var(--gold-dim); border-color:var(--gold);">
+        <div class="block-body" style="text-align:center;">
+          Prepararse <b>20 minutos antes</b> de la sesión activa. Si no hay setup claro, <b>no operar es la decisión correcta</b>.
+        </div>
+      </div>
+
+      <div class="impact">La paciencia es la ventaja competitiva</div>
+    </div>
+
+    <!-- ── SLIDE 5: DATA ───────────────────────────── -->
+    <div class="slide" id="slide-5">
+      <span class="section-badge">05 — Data</span>
+      <div class="tag">Evidencia y Medición</div>
+      <div class="slide-title">DATA Y<br><em>ESTADÍSTICA</em></div>
+
+      <div class="grid-2-1">
+        <div>
+          <div class="block">
+            <div class="block-title">Journal — Datos del Trade</div>
+            <ul class="check-list">
+              <li>Par, sesión, dirección, resultado</li>
+              <li>Captura de pantalla de la entrada</li>
+              <li>Estado emocional antes y después</li>
+              <li>¿Se cumplieron los 4 filtros?</li>
+              <li>Qué salió bien / qué mejorar</li>
+            </ul>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="block">
+            <div class="block-title">Métricas Clave</div>
+            <div class="block-body">
+              <b>Win Rate</b> — % de trades ganadores<br>
+              <b>Drawdown</b> — pérdida acumulada máx.<br>
+              <b>Expectativa</b> — ganancia media/trade
+            </div>
+          </div>
+          <div class="block">
+            <div class="block-title">Cadencia de Revisión</div>
+            <div class="block-body">
+              <b>Diaria:</b> journal post-sesión inmediato<br>
+              <b>Semanal:</b> patrones y errores recurrentes<br>
+              <b>Mensual:</b> curva de equity completa
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact">Lo que no se mide, no se puede mejorar</div>
+    </div>
+
+    <!-- ── SLIDE 6: PROTOCOLO ─────────────────────── -->
+    <div class="slide" id="slide-6">
+      <span class="section-badge">06 — Protocolo</span>
+      <div class="tag">Rutina de Ejecución</div>
+      <div class="slide-title">PROTOCOLO DE<br><em>EJECUCIÓN</em></div>
+
+      <div class="grid-2-1" style="align-items:start;">
+        <div class="proto-col">
+          <div class="step">
+            <div class="step-num">A</div>
+            <div class="step-content">
+              <div class="step-label">Antes</div>
+              <div class="step-text">Revisar contexto. Marcar zonas. Definir sesgo. Verificar estado mental. Nada de esto es opcional.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">B</div>
+            <div class="step-content">
+              <div class="step-label">Durante</div>
+              <div class="step-text">Esperar setup completo. Ejecutar sin dudar si los 4 filtros están presentes. No modificar el SL en contra.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">C</div>
+            <div class="step-content">
+              <div class="step-label">Después</div>
+              <div class="step-text">Registrar en el journal. Analizar emociones. Cerrar el día. Sin revancha, sin sobre-análisis.</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="block">
+            <div class="block-title">Entrada Válida</div>
+            <div style="margin-top:8px;">
+              <span class="pill">✓ Contexto leído</span>
+              <span class="pill">✓ Dirección clara</span>
+              <span class="pill">✓ POI identificado</span>
+              <span class="pill">✓ Confirmación recibida</span>
+            </div>
+          </div>
+          <div class="block" style="border-color:var(--red-border);">
+            <div class="block-title" style="color:#E57373;">No Entrar Si…</div>
+            <div style="margin-top:8px;">
+              <span class="pill pill-red">✗ Algún filtro falla</span>
+              <span class="pill pill-red">✗ Estado emocional alterado</span>
+              <span class="pill pill-red">✗ Ya van 3 pérdidas hoy</span>
+              <span class="pill pill-red">✗ Hay dudas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact">La disciplina en la ejecución es la ventaja real</div>
+    </div>
+
+    <!-- ── SLIDE 7: MEJORA ────────────────────────── -->
+    <div class="slide" id="slide-7">
+      <span class="section-badge">07 — Mejora</span>
+      <div class="tag">Evolución Constante</div>
+      <div class="slide-title">MEJORA<br><em>CONTINUA</em></div>
+
+      <div class="grid-2">
+        <div class="block">
+          <div class="block-title">Revisión Semanal</div>
+          <ul class="check-list">
+            <li>¿Se siguió el plan al 100%?</li>
+            <li>¿Qué trades no cumplían los filtros y se tomaron igual?</li>
+            <li>Identificar el <b>error recurrente</b> de la semana</li>
+            <li>Definir <b>un solo ajuste</b> para la próxima semana</li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-title">Revisión Mensual</div>
+          <ul class="check-list">
+            <li>Analizar la curva de equity completa</li>
+            <li>Revisar win rate y drawdown del mes</li>
+            <li>¿El sistema sigue siendo válido?</li>
+            <li><b>Escalar o reducir</b> según el desempeño real</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="block" style="margin-top:12px;background:var(--gold-dim);border-color:var(--gold);">
+        <div class="block-body" style="text-align:center;">
+          Un trader consistente no cambia el sistema cada semana. <b>Ajusta su ejecución.</b><br>
+          El sistema se evalúa con un mínimo de <b>100 trades de muestra</b>.
+        </div>
+      </div>
+
+      <div class="impact">El mejor trader de hoy no era el mismo de hace 3 meses</div>
+    </div>
+
+    <!-- ── SLIDE 8: REGLAS ────────────────────────── -->
+    <div class="slide" id="slide-8">
+      <span class="section-badge">08 — Reglas</span>
+      <div class="tag">Límites Absolutos</div>
+      <div class="slide-title">REGLAS NO<br><em>NEGOCIABLES</em></div>
+
+      <div style="display:flex;flex-direction:column;gap:9px;margin-top:24px;">
+        <div class="rule">
+          <div class="rule-num">01</div>
+          <div>
+            <div class="rule-label">Control Emocional</div>
+            <div class="rule-text">No operar en estado de rabia, euforia, miedo, ansiedad o sed de revancha. El mercado no perdona el ego.</div>
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">02</div>
+          <div>
+            <div class="rule-label">Gestión de Riesgo</div>
+            <div class="rule-text">No romper la gestión de riesgo bajo ninguna circunstancia. Ni por "esta vez es seguro".</div>
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">03</div>
+          <div>
+            <div class="rule-label">Los 4 Filtros</div>
+            <div class="rule-text">No entrar si los 4 filtros del sistema no están completos. La duda es una señal de no entrar.</div>
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">04</div>
+          <div>
+            <div class="rule-label">Stop Loss Intocable</div>
+            <div class="rule-text">No mover el Stop Loss en contra del trade para "salvar" una operación perdedora. Nunca.</div>
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">05</div>
+          <div>
+            <div class="rule-label">Límite Diario</div>
+            <div class="rule-text">Tres pérdidas en el día = cierre total de sesión. No hay excepción. El mercado estará mañana.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact">Romper una regla no es un error. Es una elección.</div>
+    </div>
+
+    <!-- ── SLIDE 9: COMPROMISO ────────────────────── -->
+    <div class="slide" id="slide-9">
+      <span class="section-badge">09 — Compromiso</span>
+      <div class="tag">El Acuerdo</div>
+      <div class="slide-title" style="text-align:center;">MI<br><em>COMPROMISO</em></div>
+
+      <div class="commitment-wrap">
+        <p class="commitment-text">
+          Me comprometo a operar con <b>disciplina y consistencia</b>.<br>
+          Seguiré mi sistema completo, sin excepciones.<br>
+          Protegeré mi capital como prioridad número uno.<br>
+          Registraré cada trade y aprenderé de cada resultado.<br>
+          <b>No operaré por miedo, por euforia, ni por revancha.</b><br>
+          Seré el trader que el mercado respeta porque primero<br>
+          me respeto a mí mismo.
+        </p>
+        <div class="sign-area">
+          <div class="sign-field">
+            <div class="sign-line-el"></div>
+            <p>Firma del Trader</p>
+          </div>
+          <div class="sign-field">
+            <div class="sign-line-el"></div>
+            <p>Fecha de Inicio</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="impact" style="justify-content:center;">La consistencia no es un accidente. Es una decisión diaria.</div>
+    </div>
+
+  </div><!-- /slides-wrap -->
+
+  <div id="kb-hint">← → Teclas de flecha para navegar</div>
+
+  <div id="nav">
+    <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)" disabled>← Anterior</button>
+    <div class="nav-center">
+      <div class="nav-dots" id="dots"></div>
+      <div class="counter" id="counter">1 / 10</div>
+    </div>
+    <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+  var current = 0;
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var bar = document.getElementById('progress-bar');
+  var counter = document.getElementById('counter');
+  var hint = document.getElementById('kb-hint');
+  var hintTimer;
+
+  var dotsEl = document.getElementById('dots');
+  for (var i = 0; i < total; i++) {
+    var d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.dataset.i = i;
+    (function(idx) { d.onclick = function() { goTo(idx); }; })(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    if (n === current) return;
+    var dir = n > current ? 1 : -1;
+    slides[current].classList.add(dir > 0 ? 'exit-left' : '');
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    setTimeout((function(old){ return function(){ slides[old].classList.remove('exit-left'); }; })(current), 450);
+
+    current = n;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    bar.style.width = Math.round(((current + 1) / total) * 100) + '%';
+    document.getElementById('btn-prev').disabled = current === 0;
+    document.getElementById('btn-next').disabled = current === total - 1;
+    slides[current].scrollTop = 0;
+  }
+
+  function changeSlide(dir) {
+    var n = current + dir;
+    if (n >= 0 && n < total) goTo(n);
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  });
+
+  hintTimer = setTimeout(function() { hint.classList.add('hidden'); }, 4000);
+</script>
+</body>
+</html>
